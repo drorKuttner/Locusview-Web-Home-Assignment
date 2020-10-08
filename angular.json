@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "locusview-interview-task": {
+    "locusview-interview": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/locusview-interview-task",
+            "outputPath": "dist/locusview-interview",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -62,18 +62,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "locusview-interview-task:build"
+            "browserTarget": "locusview-interview:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "locusview-interview-task:build:production"
+              "browserTarget": "locusview-interview:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "locusview-interview-task:build"
+            "browserTarget": "locusview-interview:build"
           }
         },
         "test": {
@@ -110,15 +110,15 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "locusview-interview-task:serve"
+            "devServerTarget": "locusview-interview:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "locusview-interview-task:serve:production"
+              "devServerTarget": "locusview-interview:serve:production"
             }
           }
         }
       }
     }},
-  "defaultProject": "locusview-interview-task"
+  "defaultProject": "locusview-interview"
 }

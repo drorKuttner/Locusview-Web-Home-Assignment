@@ -1,0 +1,15 @@
+<div class="root">
+  <h3>Insert players names</h3>
+
+  <mat-form-field>
+    <input matInput placeholder="player 1 name" type="text" [(ngModel)]="players.playerName1" ngModelOptions="{standalone: true}">
+  </mat-form-field>
+
+  <mat-form-field>
+    <input matInput placeholder="player 2 name" type="text" [(ngModel)]="players.playerName2" ngModelOptions="{standalone: true}">
+  </mat-form-field>
+
+  <button mat-button [disabled]="!players.playerName1 || !players.playerName2" (click)="done()">Done</button>
+</div>
+
+

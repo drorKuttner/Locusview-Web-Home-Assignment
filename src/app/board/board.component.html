@@ -1,0 +1,6 @@
+<div class="board-container">
+  <app-square *ngFor="let square of board; let idx = index" [value]="square"
+              (click)="onSetSquareValue(idx)" [ngClass]="{pointer: square === squareValueType.Empty}"
+              [isWinningSequence]="winningSequence?.includes(idx)"
+  ></app-square>
+</div>

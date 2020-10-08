@@ -1,0 +1,10 @@
+<div *ngIf="playersNames && winnerIndex === winnerIndexType.Empty" class="message">
+  {{playersNames[currentPlayerIdx]}}'s turn
+</div>
+
+<div *ngIf="playersNames && winnerIndex !== winnerIndexType.Empty">
+  <div *ngIf="winnerIndex === winnerIndexType.Player1 || winnerIndex === winnerIndexType.Player2"
+       class="message">{{playersNames[winnerIndex]}} wins!</div>
+  <div *ngIf="winnerIndex === winnerIndexType.Draw" class="message">No Winner</div>
+  <div class="reset">Press any key to start a new game</div>
+</div>
