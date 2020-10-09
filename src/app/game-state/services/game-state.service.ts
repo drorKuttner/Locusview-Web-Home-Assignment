@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, combineLatest, Observable} from 'rxjs';
+import {cloneDeep} from 'lodash';
 import {GameState} from '../../models/game-state.model';
 import {SquareValue} from '../../models/square-value.model';
 import {WINNING_SEQUENCES} from '../../configuration/winning-sequences.conf';
@@ -41,6 +42,23 @@ export class gameStateService {
     this.isDrawSubject.next(null);
   }
 
+  // check if the last move have won
+  private updateWinningSequence(lastValueType: SquareValue,
+                                board: SquareValue[] = this.board, updateGameState: boolean = true): Sequence {
+    let winningSequence: Sequence = null;
+    WINNING_SEQUENCES.forEach((sequence: Sequence) => {
+      if (sequence.every((n: SquareValue) => board[n] === lastValueType)) {
+        winningSequence = sequence;
+        return;
+      }
+    });
+    if (updateGameState) {
+      this.winningSequenceSubject.next(winningSequence);
+    }
+    return winningSequence;
+  }
+
+  // check if no player would be able to win
   private updateIsDraw(lastValueType: SquareValue): boolean {
     if(!!this.winningSequenceSubject.getValue()) {
       return false;
@@ -53,9 +71,16 @@ export class gameStateService {
     this.isDrawSubject.next((this.winningSequencesWithoutValue(SquareValue.X) ===
       0 && this.winningSequencesWithoutValue(SquareValue.O) === 0) ||
       (this.winningSequencesWithoutValue(SquareValue.X) + this.winningSequencesWithoutValue(SquareValue.O) === 1 &&
-        (numberOfEmptySquares < 2 ||  (numberOfEmptySquares === 2 && this.areTwoLastEmptySquaresinSameSequence()))));
+        ((numberOfEmptySquares === 1 && !this.lastMoveWins(lastValueType)) ||  (numberOfEmptySquares === 2 && this.areTwoLastEmptySquaresInSameSequence()))));
   }
 
+
+
+
+
+  /***
+   * helper functions for checking draw state
+   * ***/
   private winningSequencesWithoutValue(squareValue: SquareValue): number {
     let a = WINNING_SEQUENCES.filter((sequence: Sequence) => {
       return sequence.every((squareValueInsSequence: SquareValue) => {
@@ -65,7 +90,7 @@ export class gameStateService {
     return a.length;
   }
 
-  private areTwoLastEmptySquaresinSameSequence(): boolean {
+  private areTwoLastEmptySquaresInSameSequence(): boolean {
     const emptySquaresIndexes: number[] = (Object.keys(this.board)).filter((key: string) => {
       const index: number = Number(key);
       return this.board[index] === SquareValue.Empty;
@@ -78,20 +103,14 @@ export class gameStateService {
     })
   }
 
+  private lastMoveWins(lastValueType: SquareValue): boolean {
+    const fullBoard: Board = cloneDeep(this.board);
+    fullBoard[this.board.indexOf(SquareValue.Empty)] = (lastValueType + 1) % 2;
+    return !!this.updateWinningSequence((lastValueType + 1) % 2, fullBoard, false);
+  }
+
 
   private getEmptySquaresNumber(): number {
     return this.board.filter((squareValue: SquareValue) => squareValue === SquareValue.Empty).length;
-  }
-
-  // check if the last move have won
-  private updateWinningSequence(lastValueType: SquareValue): void {
-    let winningSequence: Sequence = null;
-    WINNING_SEQUENCES.forEach((sequence: Sequence) => {
-      if (sequence.every((n: SquareValue) => this.board[n] === lastValueType)) {
-        winningSequence = sequence;
-        return;
-      }
-    });
-    this.winningSequenceSubject.next(winningSequence);
   }
 }
